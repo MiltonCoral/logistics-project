@@ -1,0 +1,141 @@
+<div class="form-container">
+
+  <!-- CABECERA -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <a routerLink="/dashboard/checklist">Checklist Inspección Vehicular</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-actual">Nuevo Registro</span>
+      </div>
+      <h1 class="page-title">Subir Documento Escaneado</h1>
+      <p class="page-subtitle">Complete los datos y adjunte el archivo del checklist</p>
+    </div>
+  </div>
+
+  <!-- MENSAJE -->
+  <div *ngIf="mensaje" class="alerta" [class.alerta-exito]="tipoMensaje === 'exito'" [class.alerta-error]="tipoMensaje === 'error'">
+    {{ mensaje }}
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="form-card">
+
+    <form [formGroup]="formulario" (ngSubmit)="submit()">
+
+      <!-- FILA 1: Fecha y Placa -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fecha">
+            Fecha <span class="obligatorio">*</span>
+          </label>
+          <input
+            type="date"
+            id="fecha"
+            formControlName="fecha"
+            class="input-field"
+            [class.input-error]="f['fecha'].invalid && f['fecha'].touched"
+          >
+          <p *ngIf="f['fecha'].invalid && f['fecha'].touched" class="error-text">
+            La fecha es obligatoria
+          </p>
+        </div>
+        <p></p>
+
+
+        <div class="form-group">
+          <label for="placa">
+            Placa del Vehículo <span class="obligatorio">*</span>
+          </label>
+          <input
+            type="text"
+            id="placa"
+            formControlName="placa"
+            class="input-field input-placa"
+            [class.input-error]="f['placa'].invalid && f['placa'].touched"
+            placeholder="Ej: ABC-123"
+            maxlength="20"
+          >
+          <p *ngIf="f['placa'].invalid && f['placa'].touched" class="error-text">
+            La placa es obligatoria
+          </p>
+        </div>
+      </div>
+      
+
+      <!-- FILA 2: Movimiento -->
+      <div class="form-group">
+        <label for="movimiento">
+          Movimiento <span class="obligatorio">*</span>
+        </label>
+        <input
+          type="text"
+          id="movimiento"
+          formControlName="movimiento"
+          class="input-field"
+          [class.input-error]="f['movimiento'].invalid && f['movimiento'].touched"
+          placeholder="Ej: Carga de cemento - Ruta Lima-Huancayo"
+          maxlength="255"
+        >
+        <p *ngIf="f['movimiento'].invalid && f['movimiento'].touched" class="error-text">
+          El movimiento es obligatorio
+        </p>
+      </div>
+
+      <!-- FILA 3: Archivo -->
+      <div class="form-group">
+        <label>
+          Archivo Escaneado <span class="obligatorio">*</span>
+        </label>
+        <p class="help-text">Formatos permitidos: PDF, JPG, PNG. Tamaño máximo: 10MB</p>
+
+        <!-- Zona para arrastrar o seleccionar archivo -->
+        <div class="archivo-zone"
+             [class.archivo-zone-activo]="nombreArchivo" (click)="abrirSelectorArchivo()">
+
+          <input
+            type="file"
+            id="inputArchivo"
+            class="input-file-hidden"
+            accept=".pdf,.jpg,.jpeg,.png"
+            (change)="onArchivoSeleccionado($event)"
+          >
+
+          <!-- Si no hay archivo -->
+          <div *ngIf="!nombreArchivo" class="archivo-placeholder">
+            <span class="archivo-icono">📁</span>
+            <p class="archivo-texto">Haz clic para seleccionar el archivo</p>
+            <p class="archivo-subtexto">o arrastra y suelta aquí</p>
+          </div>
+
+          <!-- Si hay archivo seleccionado -->
+          <div *ngIf="nombreArchivo" class="archivo-seleccionado">
+            <span class="archivo-icono-check">✅</span>
+            <div class="archivo-info">
+              <p class="archivo-nombre">{{ nombreArchivo }}</p>
+              <p class="archivo-tamano" *ngIf="archivoSeleccionado">
+                {{ (archivoSeleccionado.size / 1024 / 1024).toFixed(2) }} MB
+              </p>
+            </div>
+            <button type="button" class="btn-quitar-archivo" (click)="limpiarArchivo(); $event.stopPropagation()">
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOTONES -->
+      <div class="form-botones">
+        <button type="button" class="btn-volver" (click)="volver()">
+          ← Volver a la lista
+        </button>
+        <button type="submit" class="btn-guardar" [disabled]="enviando">
+          <span *ngIf="!enviando">Guardar Documento</span>
+          <span *ngIf="enviando">Guardando...</span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+</div>

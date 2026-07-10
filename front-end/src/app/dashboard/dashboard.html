@@ -1,0 +1,59 @@
+<div class="dashboard-container">
+
+  <!-- SIDEBAR izquierdo -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2>Gestión Logística</h2>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="nav-label">MÓDULOS</p>
+
+      <a routerLink="/dashboard/checklist"
+         routerLinkActive="active"
+         class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span>Checklist Inspección Vehicular</span>
+      </a>
+
+      <!-- Aqui van los demas modulos cuando los haga:
+      <a routerLink="/dashboard/guias" class="nav-item">
+        <span class="nav-icon">📄</span>
+        <span>Guías de Viaje</span>
+      </a>
+      -->
+          <!-- NUEVO: Modulo de Guias -->
+      <a routerLink="/dashboard/guias"
+        routerLinkActive="active"[routerLinkActiveOptions]="{ exact: false }"class="nav-item">
+        <span class="nav-icon">📄</span>
+        <span>Guías por Cliente</span>
+      </a>
+      
+       <!-- NUEVO: Modulo de Exportacion -->
+      <a routerLink="/dashboard/exportacion"
+         routerLinkActive="active"
+         class="nav-item">
+        <span class="nav-icon">🖨️</span>
+        <span>Exportación e Impresión</span>
+      </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">{{ nombreUsuario.charAt(0) }}</div>
+        <div>
+          <p class="user-name">{{ nombreUsuario }}</p>
+          <p class="user-role">{{ rolUsuario }}</p>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO principal -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>
