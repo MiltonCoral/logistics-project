@@ -1,0 +1,18 @@
+<div class="login-page">
+  <div class="login-box">
+    <h1>Sistema Logistico</h1>
+
+    <p>Usuario:</p>
+    <input type="text" #inputUser>
+
+    <p>Contraseña:</p>
+    <input type="password" #inputPass>
+
+    <br><br>
+    <button (click)="login(inputUser.value, inputPass.value)">Entrar</button>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+  </div>
+</div>

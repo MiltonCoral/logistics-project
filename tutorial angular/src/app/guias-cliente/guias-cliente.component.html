@@ -1,0 +1,69 @@
+<div class="clientes-container">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Guías por Cliente</h1>
+      <p class="page-subtitle">Selecciona un cliente para ver o subir guías de viaje</p>
+    </div>
+    <button class="btn-nuevo" (click)="abrirModal()">
+      + Añadir Nuevo Cliente
+    </button>
+  </div>
+
+  <div *ngIf="mensaje" class="alerta" [class.alerta-exito]="tipoMensaje === 'exito'" [class.alerta-error]="tipoMensaje === 'error'">
+    {{ mensaje }}
+  </div>
+
+  <!-- BLOQUE DE CARGANDO ELIMINADO: los clientes se pintan directamente -->
+
+  <div *ngIf="clientes.length > 0" class="clientes-grid">
+    <div *ngFor="let cliente of clientes; let i = index"
+         class="cliente-card"
+         (click)="entrarAlCliente(cliente.id)">
+
+      <div class="card-avatar" [style.background]="obtenerColorAvatar(i)">
+        {{ obtenerInicial(cliente.nombreCliente) }}
+      </div>
+
+      <div class="card-info">
+        <h3 class="card-nombre">{{ cliente.nombreCliente }}</h3>
+        <p class="card-fecha">Creado: {{ formatearFecha(cliente.fechaCreacion) }}</p>
+      </div>
+
+      <div class="card-flecha">→</div>
+
+      <button class="btn-card-eliminar"
+              (click)="eliminarCliente(cliente.id, cliente.nombreCliente); $event.stopPropagation()"
+              title="Eliminar cliente">
+        ✕
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div *ngIf="mostrandoModal" class="modal-overlay" (click)="cerrarModal()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Nuevo Cliente</h2>
+      <button class="modal-cerrar" (click)="cerrarModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <label for="nuevoNombre">Nombre del Cliente</label>
+      <input
+        type="text"
+        id="nuevoNombre"
+        #inputNombre
+        class="input-field"
+        placeholder="Ej: TRANSCOCA"
+        maxlength="100"
+        (keyup.enter)="guardarCliente()">
+      <p class="help-text">Escribe el nombre de la empresa cliente. No hay límite de clientes.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardarCliente()">Guardar Cliente</button>
+    </div>
+  </div>
+</div>

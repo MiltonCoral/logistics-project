@@ -1,0 +1,5 @@
+node_modules/
+
+# OS wildcard files
+.DS_Store
+Thumbs.db
