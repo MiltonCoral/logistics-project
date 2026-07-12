@@ -13,29 +13,27 @@ export class ClienteService {
   private baseUrl = 'http://localhost:8080/api/clientes';
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService
+    private http: HttpClient
+   // private authService: AuthService
   ) { }
 
   // Headers con token JWT
-  private getHeaders(): HttpHeaders {
-    const token = this.authService.obtenerToken();
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
+  //private getHeaders(): HttpHeaders {
+  //  const token = this.authService.obtenerToken();
+  //  return new HttpHeaders({
+  //    'Authorization': `Bearer ${token}`
+  //  });
+  //}
 
   // GET /api/clientes - Listar todos los clientes
   listarTodos(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(this.baseUrl, {
-      headers: this.getHeaders()
     });
   }
 
   // GET /api/clientes/{id} - Obtener un cliente por ID
   obtenerPorId(id: number): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.baseUrl}/${id}`, {
-      headers: this.getHeaders()
     });
   }
 
@@ -43,7 +41,7 @@ export class ClienteService {
   // Body: { "nombreCliente": "NUEVO CLIENTE S.A." }
   crear(cliente: Cliente): Observable<Cliente> {
     return this.http.post<Cliente>(this.baseUrl, cliente, {
-      headers: this.getHeaders()
+
     });
   }
 
@@ -51,7 +49,7 @@ export class ClienteService {
   // Ojo: elimina tambien sus guias por CASCADE
   eliminar(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`, {
-      headers: this.getHeaders()
+   
     });
   }
 }

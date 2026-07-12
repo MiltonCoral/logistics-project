@@ -6,7 +6,6 @@
 CREATE DATABASE logistica_db;
 
 -- Conectar a la base de datos
-\c logistica_db;
 
 -- ============================================================
 -- Tabla: usuarios

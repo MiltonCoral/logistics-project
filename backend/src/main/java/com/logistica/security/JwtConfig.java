@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class JwtConfig {
 
     // CAMBIAR ESTA CLAVE EN PRODUCCIÓN - Debe ser larga y segura
-    public static final String SECRET = "logistica_secret_key_2024_super_segura_para_firmar_tokens_jwt_no_compartir";
+    public static final String SECRET = "mRFTG0fdQuHqIUMZDbT4ZHv8iWfZaZjIColoQPAyYGb";
 
     // Token válido por 24 horas
     public static final long EXPIRATION = 86400000;

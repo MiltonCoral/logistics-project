@@ -1,11 +1,18 @@
 package com.logistica.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.logistica.dao.ClienteDao;
 import com.logistica.model.Cliente;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -50,9 +57,9 @@ public class ClienteController {
      * Response: { "id": 5, "nombreCliente": "NUEVO CLIENTE S.A.", ... }
      */
     @PostMapping
-    public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
-        Cliente nuevo = clienteDao.save(cliente);
-        return ResponseEntity.ok(nuevo);
+    public ResponseEntity<String> crearCliente(@RequestBody Cliente cliente) {
+    String mensaje = clienteDao.save(cliente);
+    return ResponseEntity.ok(mensaje);
     }
 
     /**
@@ -61,8 +68,8 @@ public class ClienteController {
      * Requiere: Header Authorization con Bearer <token>
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarCliente(@PathVariable Long id) {
-        clienteDao.deleteById(id);
-        return ResponseEntity.ok().body("Cliente eliminado correctamente");
+    public ResponseEntity<String> eliminarCliente(@PathVariable Long id) {
+        String mensaje = clienteDao.deleteById(id);
+        return ResponseEntity.ok(mensaje);
     }
 }

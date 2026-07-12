@@ -1,15 +1,12 @@
 package com.logistica.dao;
 
-import com.logistica.model.Cliente;
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.List;
+import com.logistica.model.Cliente;
 
 @Repository
 public class ClienteDao {
@@ -42,26 +39,16 @@ public class ClienteDao {
     }
 
     // Crear nuevo cliente
-    public Cliente save(Cliente cliente) {
+    public String save(Cliente cliente) {
         String sql = "INSERT INTO clientes (nombre_cliente) VALUES (?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, cliente.getNombreCliente());
-            return ps;
-        }, keyHolder);
-
-        Number key = keyHolder.getKey();
-        if (key != null) {
-            cliente.setId(key.longValue());
-        }
-        return cliente;
+        jdbcTemplate.update(sql, cliente.getNombreCliente());
+        return "Cliente guardado exitosamente";
     }
 
     // Eliminar cliente
-    public void deleteById(Long id) {
+    public String deleteById(Long id) {
         String sql = "DELETE FROM clientes WHERE id = ?";
         jdbcTemplate.update(sql, id);
+        return "Cliente eliminado correctamente";
     }
 }

@@ -48,6 +48,7 @@ public class SecurityConfig {
 
                 // Todo lo demás requiere autenticación con JWT
                 .anyRequest().authenticated()
+                //.anyRequest().permitAll()
             )
 
             // Agregar el filtro JWT ANTES del filtro de autenticación de Spring

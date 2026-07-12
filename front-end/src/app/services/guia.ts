@@ -13,23 +13,23 @@ export class GuiaService {
   private baseUrl = 'http://localhost:8080/api/guias';
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService
+    private http: HttpClient//,
+    //private authService: AuthService
   ) { }
 
   // Headers con token JWT
-  private getHeaders(): HttpHeaders {
-    const token = this.authService.obtenerToken();
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
+ // private getHeaders(): HttpHeaders {
+ //   const token = this.authService.obtenerToken();
+ //   return new HttpHeaders({
+ //     'Authorization': `Bearer ${token}`
+ //   });
+ // }
 
   // GET /api/guias/cliente/{idCliente}
   // Listar todas las guias de un cliente especifico
   listarPorCliente(idCliente: number): Observable<Guia[]> {
     return this.http.get<Guia[]>(`${this.baseUrl}/cliente/${idCliente}`, {
-      headers: this.getHeaders()
+   //   headers: this.getHeaders()
     });
   }
 
@@ -56,8 +56,8 @@ export class GuiaService {
     }
 
     return this.http.get<Guia[]>(
-      `${this.baseUrl}/cliente/${idCliente}/buscar${params}`,
-      { headers: this.getHeaders() }
+      `${this.baseUrl}/cliente/${idCliente}/buscar${params}`//,
+     // { headers: this.getHeaders() }
     );
   }
 
@@ -66,22 +66,22 @@ export class GuiaService {
   // Body: { idCliente, fecha, numeroGuia, placa, motivoMovimiento, rutaArchivo, nombreArchivo }
   crear(guia: Guia): Observable<Guia> {
     return this.http.post<Guia>(this.baseUrl, guia, {
-      headers: this.getHeaders()
+     // headers: this.getHeaders()
     });
   }
 
   // DELETE /api/guias/{id}
   eliminar(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`, {
-      headers: this.getHeaders()
+     // headers: this.getHeaders()
     });
   }
 
   // GET /api/guias/cliente/{idCliente}/exportar?fechaInicio=...&fechaFin=...
   exportarRango(idCliente: number, fechaInicio: string, fechaFin: string): Observable<Guia[]> {
     return this.http.get<Guia[]>(
-      `${this.baseUrl}/cliente/${idCliente}/exportar?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`,
-      { headers: this.getHeaders() }
+      `${this.baseUrl}/cliente/${idCliente}/exportar?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`//,
+    //  { headers: this.getHeaders() }
     );
   }
 }
