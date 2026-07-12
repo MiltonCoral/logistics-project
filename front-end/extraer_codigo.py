@@ -3,10 +3,10 @@ from pathlib import Path
 
 def extraer_proyecto_angular(ruta_proyecto, archivo_salida):
     # Extensiones de código fuente y configuración que queremos extraer
-    extensiones_permitidas = {'.ts', '.js', '.html', '.css', '.scss', '.less', '.json'}
+    extensiones_permitidas = {'.ts', '.js', '.html', '.css'}
     
     # Carpetas que queremos ignorar completamente (para no hacer el txt gigante e inútil)
-    carpetas_a_ignorar = {'node_modules', 'dist', '.git', '.angular', '.vscode', 'coverage'}
+    carpetas_a_ignorar = {'node_modules', 'dist', '.git', '.angular', '.vscode', 'coverage','calculadora','tabla-datos'}
 
     ruta = Path(ruta_proyecto)
     
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     # 1. Pon aquí la ruta de tu proyecto Angular (puede ser relativa o absoluta)
     # Ejemplo relativo: "./mi-proyecto-angular"
     # Ejemplo absoluto: "C:/Users/TuUsuario/Documents/mi-proyecto-angular"
-    RUTA_DEL_PROYECTO = "/Users/edi/Documents/Trabajo/backend S.A/front-end" 
+    RUTA_DEL_PROYECTO = "/Users/edi/Documents/Trabajo/tutorial angular" 
     
     # 2. Nombre del archivo de texto que se va a generar
     ARCHIVO_DE_SALIDA = "codigo_angular_completo.txt"
