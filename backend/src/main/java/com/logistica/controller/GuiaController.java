@@ -1,11 +1,19 @@
 package com.logistica.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.logistica.dao.GuiaDao;
 import com.logistica.model.Guia;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/guias")
@@ -103,8 +111,8 @@ public class GuiaController {
      * Requiere: Header Authorization con Bearer <token>
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarGuia(@PathVariable Long id) {
-        guiaDao.deleteById(id);
-        return ResponseEntity.ok().body("Guía eliminada correctamente");
+    public ResponseEntity<String> eliminarGuia(@PathVariable Long id) {
+        String mensaje = guiaDao.deleteById(id);
+        return ResponseEntity.ok(mensaje);
     }
 }

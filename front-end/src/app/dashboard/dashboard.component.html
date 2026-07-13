@@ -9,13 +9,12 @@
     <nav class="sidebar-nav">
       <p class="nav-label">MÓDULOS</p>
 
-      <!-- Clientes -->
-      <a (click)="vistaActiva = 'clientes'"
-         [class.active]="vistaActiva === 'clientes'"
+      <a (click)="navigateTo('guias')"
+         [class.active]="vistaActiva === 'guias'"
          class="nav-item"
          style="cursor: pointer;">
         <span class="nav-icon">👥</span>
-        <span>Clientes</span>
+        <span>Guías por Cliente</span>
       </a>
 
     </nav>
@@ -34,19 +33,10 @@
 
   <!-- CONTENIDO PRINCIPAL -->
   <main class="main-content">
-    <div class="dashboard-welcome">
-      <h1>Bienvenido al Dashboard</h1>
-    </div>
 
     <div class="contenido">
-
-      @if (vistaActiva === 'clientes') {
-        <app-clientes></app-clientes>
-      }
-      
+      <router-outlet></router-outlet>
     </div>
-
-
   </main>
 
 </div>

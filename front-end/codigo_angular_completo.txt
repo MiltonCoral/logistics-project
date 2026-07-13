@@ -302,13 +302,13 @@ export class ClienteService {
   }
 
   /** POST /api/clientes — Crear nuevo cliente */
-  crear(cliente: Cliente): Observable<Cliente> {
-    return this.http.post<Cliente>(this.baseUrl, cliente);
+  crear(cliente: Cliente): Observable<string> {
+    return this.http.post(this.baseUrl, cliente, { responseType: 'text' });
   }
 
   /** DELETE /api/clientes/{id} — Eliminar cliente (cascadea sus guías) */
-  eliminar(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+  eliminar(id: number): Observable<string> {
+    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
   }
 }
 
@@ -680,24 +680,6 @@ ARCHIVO: src/app/dashboard/dashboard.component.html
     <nav class="sidebar-nav">
       <p class="nav-label">MÓDULOS</p>
 
-      <!-- Calculadora -->
-      <a (click)="vistaActiva = 'calculadora'"
-         [class.active]="vistaActiva === 'calculadora'"
-         class="nav-item"
-         style="cursor: pointer;">
-        <span class="nav-icon">🧮</span>
-        <span>Calculadora</span>
-      </a>
-
-      <!-- Tabla -->
-      <a (click)="vistaActiva = 'tabla'"
-         [class.active]="vistaActiva === 'tabla'"
-         class="nav-item"
-         style="cursor: pointer;">
-        <span class="nav-icon">📋</span>
-        <span>Tabla de Datos</span>
-      </a>
-
       <!-- Clientes -->
       <a (click)="vistaActiva = 'clientes'"
          [class.active]="vistaActiva === 'clientes'"
@@ -728,14 +710,14 @@ ARCHIVO: src/app/dashboard/dashboard.component.html
     </div>
 
     <div class="contenido">
-      @if (vistaActiva === 'calculadora') {
-        <app-calculadora></app-calculadora>
-      }
 
-      @if (vistaActiva === 'tabla') {
-        <app-tabla-datos></app-tabla-datos>
+      @if (vistaActiva === 'clientes') {
+        <app-clientes></app-clientes>
       }
+      
     </div>
+
+
   </main>
 
 </div>
@@ -747,15 +729,13 @@ ARCHIVO: src/app/dashboard/dashboard.component.ts
 ////////////////////////////////////////////////////////////////////////////////
 
 import { Component } from '@angular/core';
-import { CalculadoraComponent } from '../calculadora/calculadora.component';
-import { TablaDatosComponent } from '../tabla-datos/tabla-datos.component';
 import { ClientesComponent } from '../guias-cliente/guias-cliente.component';
 import { AuthService } from '../security/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CalculadoraComponent, TablaDatosComponent, ClientesComponent],
+  imports: [ClientesComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -787,6 +767,7 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../security/services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -816,7 +797,15 @@ export class LoginComponent {
           this.error.set(res.message || 'Error');
         }
       },
-      error: () => this.error.set('Usuario o contraseña incorrectos')
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 0) {
+          this.error.set('Error de servidor. Intenta más tarde.');
+        } else if (err.status === 401 || err.status === 403) {
+          this.error.set('Usuario o contraseña incorrectos');
+        } else {
+          this.error.set('Ocurrió un error inesperado');
+        }
+      }
     });
   }
 }
@@ -975,12 +964,9 @@ ARCHIVO: src/app/guias-cliente/guias-cliente.component.html
     {{ mensaje }}
   </div>
 
-  <div *ngIf="cargando" class="loading">
-    <div class="spinner"></div>
-    <p>Cargando clientes...</p>
-  </div>
+  <!-- BLOQUE DE CARGANDO ELIMINADO: los clientes se pintan directamente -->
 
-  <div *ngIf="!cargando && clientes.length > 0" class="clientes-grid">
+  <div *ngIf="clientes.length > 0" class="clientes-grid">
     <div *ngFor="let cliente of clientes; let i = index"
          class="cliente-card"
          (click)="entrarAlCliente(cliente.id)">
@@ -1002,12 +988,6 @@ ARCHIVO: src/app/guias-cliente/guias-cliente.component.html
         ✕
       </button>
     </div>
-  </div>
-
-  <div *ngIf="!cargando && clientes.length === 0 && !mensaje" class="sin-resultados">
-    <p class="sin-resultados-icono">📁</p>
-    <p>No hay clientes registrados</p>
-    <button class="btn-nuevo-vacio" (click)="abrirModal()">Crear primer cliente</button>
   </div>
 
 </div>
@@ -1457,14 +1437,14 @@ ARCHIVO: src/app/guias-cliente/guias-cliente.component.css
 ARCHIVO: src/app/guias-cliente/guias-cliente.component.ts
 ////////////////////////////////////////////////////////////////////////////////
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClienteService, Cliente } from '../shared/apis/cliente.service';
 
 @Component({
   selector: 'app-clientes',
   standalone: true,
-  imports: [CommonModule],   // ← Sin FormsModule
+  imports: [CommonModule],
   templateUrl: './guias-cliente.component.html',
   styleUrls: ['./guias-cliente.component.css']
 })
@@ -1475,7 +1455,6 @@ export class ClientesComponent implements OnInit {
   mensaje = '';
   tipoMensaje: 'exito' | 'error' | '' = '';
 
-  // Modal
   mostrandoModal = false;
 
   @ViewChild('inputNombre') inputNombre!: ElementRef<HTMLInputElement>;
@@ -1485,64 +1464,48 @@ export class ClientesComponent implements OnInit {
     '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'
   ];
 
-  constructor(private clienteService: ClienteService) {}
+  constructor(
+    private clienteService: ClienteService,
+    private cdr: ChangeDetectorRef          // ← INYECTAMOS
+  ) {}
 
   ngOnInit(): void {
     this.cargarClientes();
   }
 
   cargarClientes(): void {
-    this.cargando = true;
     this.limpiarMensaje();
-
     this.clienteService.listarTodos().subscribe({
       next: (data) => {
         this.clientes = data;
-        this.cargando = false;
+        this.cdr.markForCheck();  // ← FORZAMOS A ANGULAR A REPINTAR
       },
       error: (err) => {
-        this.cargando = false;
-        this.mostrarMensaje('No se pudieron cargar los clientes', 'error');
+        this.mostrarMensaje('Error al cargar clientes', 'error');
         console.error(err);
+        this.cdr.markForCheck();
       }
     });
   }
 
   guardarCliente(): void {
     const nombre = this.inputNombre.nativeElement.value.trim();
-    if (!nombre) {
-      this.mostrarMensaje('El nombre del cliente es obligatorio', 'error');
-      return;
-    }
-
+    if (!nombre) { this.mostrarMensaje('El nombre es obligatorio', 'error'); return; }
     this.clienteService.crear({ nombreCliente: nombre }).subscribe({
-      next: () => {
-        this.mostrarMensaje('Cliente creado correctamente', 'exito');
-        this.cerrarModal();
-        this.cargarClientes();
-      },
-      error: (err) => {
-        this.mostrarMensaje('Error al crear el cliente', 'error');
-        console.error(err);
-      }
+      next: () => { this.mostrarMensaje('Cliente creado', 'exito'); this.cerrarModal(); this.cargarClientes(); },
+      error: (err) => { this.mostrarMensaje('Error al crear', 'error'); console.error(err); this.cerrarModal();  this.cdr.markForCheck();}
     });
   }
 
   eliminarCliente(id: number | undefined, nombre: string): void {
     if (!id) return;
-    if (!confirm(`¿Eliminar el cliente "${nombre}"?\nTambién se borrarán todas sus guías.`)) {
-      return;
-    }
-
+    if (!confirm(`¿Eliminar "${nombre}"?\nTambién se borrarán sus guías.`)) return;
     this.clienteService.eliminar(id).subscribe({
-      next: () => {
-        this.mostrarMensaje(`Cliente "${nombre}" eliminado`, 'exito');
-        this.cargarClientes();
+      next: (mensaje) => { 
+        this.mostrarMensaje(mensaje, 'exito'); // usa el mensaje del backend directamente
+        this.cargarClientes(); 
       },
-      error: (err) => {
-        this.mostrarMensaje('Error al eliminar el cliente', 'error');
-        console.error(err);
-      }
+      error: (err) => { this.mostrarMensaje('Error al eliminar', 'error'); console.error(err); this.cdr.markForCheck();}
     });
   }
 
@@ -1561,16 +1524,12 @@ export class ClientesComponent implements OnInit {
 
   formatearFecha(fecha?: string): string {
     if (!fecha) return '—';
-    const d = new Date(fecha);
-    return d.toLocaleDateString('es-ES', {
-      day: '2-digit', month: 'short', year: 'numeric'
-    });
+    return new Date(fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
   abrirModal(): void {
     this.mostrandoModal = true;
     this.limpiarMensaje();
-    setTimeout(() => this.inputNombre?.nativeElement.focus(), 50);
   }
 
   cerrarModal(): void {

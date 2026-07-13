@@ -1,16 +1,17 @@
 package com.logistica.dao;
 
-import com.logistica.model.Guia;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Date;
-import java.util.List;
+import com.logistica.model.Guia;
 
 @Repository
 public class GuiaDao {
@@ -121,8 +122,9 @@ public class GuiaDao {
     }
 
     // Eliminar guía
-    public void deleteById(Long id) {
+    public String deleteById(Long id) {
         String sql = "DELETE FROM guias WHERE id = ?";
         jdbcTemplate.update(sql, id);
+        return "Guía eliminada correctamente";
     }
 }

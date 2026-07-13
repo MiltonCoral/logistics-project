@@ -69,7 +69,7 @@ export class GuiaService {
   }
 
   /** DELETE /api/guias/{id} — Eliminar guía */
-  eliminar(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+  eliminar(id: number): Observable<string> {
+    return this.http.delete(`${this.baseUrl}/${id}`, { responseType: 'text' });
   }
 }

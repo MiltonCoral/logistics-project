@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { ClienteService, Cliente } from '../shared/apis/cliente.service';
 
 @Component({
@@ -12,10 +13,8 @@ import { ClienteService, Cliente } from '../shared/apis/cliente.service';
 export class ClientesComponent implements OnInit {
 
   clientes: Cliente[] = [];
-  cargando = false;
   mensaje = '';
   tipoMensaje: 'exito' | 'error' | '' = '';
-
   mostrandoModal = false;
 
   @ViewChild('inputNombre') inputNombre!: ElementRef<HTMLInputElement>;
@@ -27,7 +26,8 @@ export class ClientesComponent implements OnInit {
 
   constructor(
     private clienteService: ClienteService,
-    private cdr: ChangeDetectorRef          // ← INYECTAMOS
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +39,7 @@ export class ClientesComponent implements OnInit {
     this.clienteService.listarTodos().subscribe({
       next: (data) => {
         this.clientes = data;
-        this.cdr.markForCheck();  // ← FORZAMOS A ANGULAR A REPINTAR
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.mostrarMensaje('Error al cargar clientes', 'error');
@@ -54,7 +54,7 @@ export class ClientesComponent implements OnInit {
     if (!nombre) { this.mostrarMensaje('El nombre es obligatorio', 'error'); return; }
     this.clienteService.crear({ nombreCliente: nombre }).subscribe({
       next: () => { this.mostrarMensaje('Cliente creado', 'exito'); this.cerrarModal(); this.cargarClientes(); },
-      error: (err) => { this.mostrarMensaje('Error al crear', 'error'); console.error(err); this.cerrarModal();  this.cdr.markForCheck();}
+      error: (err) => { this.mostrarMensaje('Error al crear', 'error'); console.error(err); this.cerrarModal(); this.cdr.markForCheck(); }
     });
   }
 
@@ -62,17 +62,18 @@ export class ClientesComponent implements OnInit {
     if (!id) return;
     if (!confirm(`¿Eliminar "${nombre}"?\nTambién se borrarán sus guías.`)) return;
     this.clienteService.eliminar(id).subscribe({
-      next: (mensaje) => { 
-        this.mostrarMensaje(mensaje, 'exito'); // usa el mensaje del backend directamente
-        this.cargarClientes(); 
+      next: (mensaje) => {
+        this.mostrarMensaje(mensaje, 'exito');
+        this.cargarClientes();
       },
-      error: (err) => { this.mostrarMensaje('Error al eliminar', 'error'); console.error(err); this.cdr.markForCheck();}
+      error: (err) => { this.mostrarMensaje('Error al eliminar', 'error'); console.error(err); this.cdr.markForCheck(); }
     });
   }
 
+  // ← NAVEGA A LA LISTA DE GUÍAS DEL CLIENTE
   entrarAlCliente(id: number | undefined): void {
     if (!id) return;
-    console.log('Entrar al cliente:', id);
+    this.router.navigate(['/dashboard/guias/cliente', id]);
   }
 
   obtenerInicial(nombre: string): string {
