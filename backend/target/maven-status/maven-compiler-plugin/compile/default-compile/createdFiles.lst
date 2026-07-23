@@ -2,6 +2,8 @@ com/logistica/LogisticaApiApplication.class
 com/logistica/model/Usuario.class
 com/logistica/dao/ChecklistDao.class
 com/logistica/service/AuthService.class
+com/logistica/dto/UploadFileResponse.class
+com/logistica/service/FileStorageService.class
 com/logistica/model/Cliente.class
 com/logistica/controller/AuthController.class
 com/logistica/controller/ClienteController.class
@@ -11,8 +13,11 @@ com/logistica/dao/ClienteDao.class
 com/logistica/controller/GuiaController.class
 com/logistica/security/JwtConfig.class
 com/logistica/model/Guia.class
+com/logistica/service/FileStorageService$MyFileNotFoundException.class
 com/logistica/security/JwtAuthenticationFilter.class
 com/logistica/dao/UsuarioDao.class
+com/logistica/controller/FileUploadController.class
 com/logistica/security/JwtUtil.class
 com/logistica/controller/ChecklistController.class
 com/logistica/model/Checklist.class
+com/logistica/service/FileStorageService$FileStorageException.class
