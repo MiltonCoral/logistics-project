@@ -1,0 +1,144 @@
+<div class="form-container">
+
+  <!-- BREADCRUMB + CABECERA -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <a (click)="irAGuias()" class="breadcrumb-link">Guías por Cliente</a>
+        <span class="breadcrumb-sep">/</span>
+        <a (click)="volver()" class="breadcrumb-link">{{ cliente?.nombreCliente || '...' }}</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-actual">Nueva Guía</span>
+      </div>
+      <h1 class="page-title">Subir Guía de Viaje</h1>
+      <p class="page-subtitle">Cliente: <strong>{{ cliente?.nombreCliente || 'Cargando...' }}</strong></p>
+    </div>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="form-card">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="fecha">Fecha <span class="obligatorio">*</span></label>
+        <input
+          type="date"
+          id="fecha"
+          #inputFecha
+          class="input-field"
+          [class.input-error]="tieneError('fecha')"
+        >
+        <p *ngIf="tieneError('fecha')" class="error-text">
+          {{ mensajeError('fecha') }}
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label for="numeroGuia">N° de Guía <span class="obligatorio">*</span></label>
+        <input
+          type="text"
+          id="numeroGuia"
+          #inputNumeroGuia
+          class="input-field input-guia"
+          [class.input-error]="tieneError('numeroGuia')"
+          placeholder="Ej: G-001"
+          maxlength="100"
+        >
+        <p *ngIf="tieneError('numeroGuia')" class="error-text">
+          {{ mensajeError('numeroGuia') }}
+        </p>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="placa">Placa del Vehículo <span class="obligatorio">*</span></label>
+        <input
+          type="text"
+          id="placa"
+          #inputPlaca
+          class="input-field input-placa"
+          [class.input-error]="tieneError('placa')"
+          placeholder="Ej: ABC-123"
+          maxlength="20"
+        >
+        <p *ngIf="tieneError('placa')" class="error-text">
+          {{ mensajeError('placa') }}
+        </p>
+      </div>
+
+      <div class="form-group" style="flex: 2;">
+        <label for="motivoMovimiento">Motivo de Movimiento <span class="obligatorio">*</span></label>
+        <input
+          type="text"
+          id="motivoMovimiento"
+          #inputMotivo
+          class="input-field"
+          [class.input-error]="tieneError('motivo')"
+          placeholder="Ej: Entrega de mercancía - Lima a Huancayo"
+          maxlength="255"
+        >
+        <p *ngIf="tieneError('motivo')" class="error-text">
+          {{ mensajeError('motivo') }}
+        </p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Archivo Escaneado <span class="obligatorio">*</span></label>
+      <p class="help-text">Formatos permitidos: PDF, JPG, PNG. Tamaño máximo: 10MB</p>
+
+      <div class="archivo-zone"
+           [class.archivo-zone-activo]="nombreArchivo"
+           (click)="abrirSelectorArchivo()">
+
+        <input
+          type="file"
+          #inputArchivo
+          class="input-file-hidden"
+          accept=".pdf,.jpg,.jpeg,.png"
+          (change)="onArchivoSeleccionado($event)"
+        >
+
+        <div *ngIf="!nombreArchivo" class="archivo-placeholder">
+          <span class="archivo-icono">📁</span>
+          <p class="archivo-texto">Haz clic para seleccionar el archivo</p>
+          <p class="archivo-subtexto">o arrastra y suelta aquí</p>
+        </div>
+
+        <div *ngIf="nombreArchivo" class="archivo-seleccionado">
+          <span class="archivo-icono-check">✅</span>
+          <div class="archivo-info">
+            <p class="archivo-nombre">{{ nombreArchivo }}</p>
+            <p class="archivo-tamano" *ngIf="archivoSeleccionado">
+              {{ (archivoSeleccionado.size / 1024 / 1024).toFixed(2) }} MB
+            </p>
+          </div>
+          <button type="button" class="btn-quitar-archivo" (click)="limpiarArchivo(); $event.stopPropagation()">
+            ✕
+          </button>
+        </div>
+      </div>
+      <p *ngIf="tieneError('archivo')" class="error-text">
+        {{ mensajeError('archivo') }}
+      </p>
+    </div>
+
+    <!-- BOTONES -->
+    <div class="form-botones">
+      <button class="btn-volver" (click)="volver()">
+        ← Volver
+      </button>
+      <button class="btn-guardar" (click)="submit()">
+        Guardar Guía
+      </button>
+    </div>
+
+    <!-- MENSAJE DE ÉXITO / ERROR -->
+    <div *ngIf="mensaje" class="alerta" [class.alerta-exito]="tipoMensaje === 'exito'" [class.alerta-error]="tipoMensaje === 'error'">
+      {{ mensaje }}
+    </div>
+
+  </div>
+
+</div>

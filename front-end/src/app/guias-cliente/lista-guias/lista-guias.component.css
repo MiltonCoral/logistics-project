@@ -352,6 +352,12 @@
   background: #d97706;
 }
 
+ .btn-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
 /* ====== RESPONSIVE ====== */
 @media (max-width: 768px) {
   .guia-list-container {

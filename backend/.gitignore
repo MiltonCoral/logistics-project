@@ -1,0 +1,6 @@
+files/
+target/
+
+# OS wildcard files
+.DS_Store
+Thumbs.db

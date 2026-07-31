@@ -11,9 +11,10 @@
       <h1 class="page-title">{{ cliente?.nombreCliente }}</h1>
       <p class="page-subtitle">Guías de viaje de este cliente</p>
     </div>
-    <button class="btn-nuevo" (click)="nuevaGuia()">
-      + Subir Guía
-    </button>
+   <div class="btn-group">
+      <button class="btn-nuevo" (click)="volverClientes()">← Volver</button>
+      <button class="btn-nuevo" (click)="nuevaGuia()">+ Subir Guía</button>
+    </div>
   </div>
 
   <!-- MENSAJE -->

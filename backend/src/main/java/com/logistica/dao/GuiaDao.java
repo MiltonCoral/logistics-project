@@ -2,7 +2,6 @@ package com.logistica.dao;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -103,7 +102,7 @@ public class GuiaDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, guia.getIdCliente());
             ps.setDate(2, Date.valueOf(guia.getFecha()));
             ps.setString(3, guia.getNumeroGuia());

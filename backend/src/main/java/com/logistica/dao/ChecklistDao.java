@@ -1,16 +1,16 @@
 package com.logistica.dao;
 
-import com.logistica.model.Checklist;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.sql.Date;
-import java.util.List;
+import com.logistica.model.Checklist;
 
 @Repository
 public class ChecklistDao {
@@ -88,7 +88,7 @@ public class ChecklistDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setDate(1, Date.valueOf(checklist.getFecha()));
             ps.setString(2, checklist.getPlaca());
             ps.setString(3, checklist.getMovimiento());
