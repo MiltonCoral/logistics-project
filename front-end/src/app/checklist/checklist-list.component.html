@@ -1,0 +1,92 @@
+<div class="guia-list-container">
+
+  <!-- CABECERA -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Check-list de Inspección Vehicular</h1>
+      <p class="page-subtitle">Registros de inspección preoperacional</p>
+    </div>
+    <div class="btn-group">
+     <button class="btn-nuevo" (click)="nuevoChecklist()">+ Nuevo Checklist</button>
+    </div>
+  </div>
+
+  <!-- MENSAJE -->
+  <div *ngIf="mensaje" class="alerta" [class.alerta-exito]="tipoMensaje === 'exito'" [class.alerta-error]="tipoMensaje === 'error'">
+    {{ mensaje }}
+  </div>
+
+  <!-- BUSCADOR EN TIEMPO REAL -->
+  <div class="filtro-card">
+    <h3 class="filtro-titulo">Buscar Checklists</h3>
+    <div class="filtro-form">
+      <div class="filtro-campo">
+        <label>Fecha Desde:</label>
+        <input type="date" #inputFecha class="input-field"
+               (input)="filtrar(inputFecha.value, inputPlaca.value, inputMovimiento.value)">
+      </div>
+      <div class="filtro-campo">
+        <label>Placa</label>
+        <input type="text" #inputPlaca class="input-field" placeholder="Ej: ABC-123" maxlength="20"
+               (input)="filtrar(inputFecha.value, inputPlaca.value, inputMovimiento.value)">
+      </div>
+      <div class="filtro-campo">
+        <label>Movimiento</label>
+        <input type="text" #inputMovimiento class="input-field" placeholder="Ej: Carga de cemento" maxlength="255"
+               (input)="filtrar(inputFecha.value, inputPlaca.value, inputMovimiento.value)">
+      </div>
+      <div class="filtro-botones">
+        <button class="btn-limpiar" (click)="limpiar(inputFecha, inputPlaca, inputMovimiento)">Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA -->
+  <div *ngIf="checklistsFiltrados.length > 0" class="tabla-card">
+    <div class="tabla-header-info">
+      <span class="resultado-count">{{ checklistsFiltrados.length }} checklist(s) encontrado(s)</span>
+    </div>
+
+    <div class="tabla-wrapper">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Fecha</th>
+            <th>Placa</th>
+            <th>Movimiento</th>
+            <th>Archivo</th>
+            <th>Fecha Subida</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of checklistsFiltrados; let i = index">
+            <td class="td-center">{{ i + 1 }}</td>
+            <td class="td-center">{{ formatearFecha(c.fecha) }}</td>
+            <td class="td-placa">{{ c.placa }}</td>
+            <td>{{ c.movimiento }}</td>
+            <td>
+              <button class="btn-archivo" (click)="verArchivo(c.rutaArchivo)" title="Ver archivo">
+                {{ obtenerIconoArchivo(c.nombreArchivo) }} {{ c.nombreArchivo }}
+              </button>
+            </td>
+            <td class="td-center td-fecha-subida">{{ formatearFechaSubida(c.fechaSubida) }}</td>
+            <td class="td-center">
+              <button class="btn-eliminar" (click)="eliminar(c.id!)" title="Eliminar">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SIN RESULTADOS -->
+  <div *ngIf="checklistsFiltrados.length === 0 && !cargando" class="sin-resultados">
+    <p class="sin-resultados-icono">📭</p>
+    <p>No hay checklists registrados</p>
+  </div>
+
+</div>

@@ -17,6 +17,14 @@
         <span>Guías por Cliente</span>
       </a>
 
+      <a (click)="navigateTo('checklists')"
+         [class.active]="vistaActiva === 'checklists'"
+         class="nav-item"
+         style="cursor: pointer;">
+        <span class="nav-icon">🚛</span>
+        <span>Checklists</span>
+      </a>
+
     </nav>
 
     <div class="sidebar-footer">
@@ -33,7 +41,6 @@
 
   <!-- CONTENIDO PRINCIPAL -->
   <main class="main-content">
-
     <div class="contenido">
       <router-outlet></router-outlet>
     </div>

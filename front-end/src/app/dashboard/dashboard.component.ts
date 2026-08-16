@@ -26,6 +26,8 @@ export class DashboardComponent {
     this.vistaActiva = view;
     if (view === 'guias') {
       this.router.navigate(['/dashboard/guias']);
+    } else if (view === 'checklists') {
+      this.router.navigate(['/dashboard/checklists']);
     }
   }
 
